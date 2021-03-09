@@ -4,22 +4,22 @@ public class Person {
     private String name ;
     private String surname;
     private int age;
-    private long identity_number;
-    private String type;
+    private long identityNumber;
+    private Type type;
 
     public Person() {
         this.name = "No name";
         this.surname = "No surname";
         this.age = 0;
-        this.identity_number = 0;
-        this.type = "No type";
+        this.identityNumber = 0;
+        this.type = Type.NONE;
     }
 
-    public Person(String name, String surname, int age, long identity_number, String type) {
+    public Person(String name, String surname, int age, long identityNumber, Type type) {
         this.name = name;
         this.surname = surname;
         this.age = age;
-        this.identity_number = identity_number;
+        this.identityNumber = identityNumber;
         this.type = type;
     }
         public String getName() {
@@ -46,19 +46,19 @@ public class Person {
             this.age = age;
         }
 
-        public long getIdentity_number() {
-            return identity_number;
+        public long getIdentityNumber() {
+            return identityNumber;
         }
 
-        public void setIdentity_number(long identity_number) {
-            this.identity_number = identity_number;
+        public void setIdentityNumber(long identityNumber) {
+            this.identityNumber = identityNumber;
         }
 
-        public String getType() {
+        public Type getType() {
             return type;
         }
 
-        public void setType(String type) {
+        public void setType(Type type) {
             this.type = type;
         }
 
@@ -68,7 +68,7 @@ public class Person {
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", age=" + age +
-                ", identity_number=" + identity_number +
+                ", identityNumber=" + identityNumber +
                 ", type='" + type + '\'' +
                 '}';
     }

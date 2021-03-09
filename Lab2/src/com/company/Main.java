@@ -7,7 +7,7 @@ public class Main {
         // ex1
         System.out.println("Exercitiul 1: ");
         Person p1 = new Person();
-        Person p2 = new Person ("James", "William", 27, 1, "M");
+        Person p2 = new Person ("James", "William", 27, 1, Type.MASCULIN);
 
         System.out.println(p1);
         System.out.println(p2);
@@ -40,4 +40,6 @@ public class Main {
         System.out.println(n1 == n2); // afiseaza True pentru ca cele doua obiecte au aceeasi referinta
     }
 }
+
+
 

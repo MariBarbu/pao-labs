@@ -9,7 +9,10 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 
-        //ex1(); ex2(); ex3(); ex4(15);
+        //ex1();
+        //ex2();
+        //ex3();
+        //ex4(15);
         //ex5();
         //ex6();
         ex7();
@@ -44,7 +47,9 @@ public class Main {
         int n = scanner.nextInt();
         int fact = 1;
         for(int i = 1; i <= n; i++)
+        {
             fact *= i;
+        }
         System.out.println(fact);
 
     }
@@ -81,10 +86,14 @@ public class Main {
         }
         System.out.println("Numere pare: ");
         for(int i = 0; i < j; i++)
+        {
             System.out.print(pare[i] + "  ");
+        }
         System.out.println();
         for(int i = 0; i < k; i++)
+        {
             System.out.print(impare[i] + "  ");
+        }
 
     }
 

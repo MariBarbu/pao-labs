@@ -1,54 +1,52 @@
 package com.company;
 
 public class Room {
-    private int room_number;
-    private String room_type;
-    private String room_floor;
+    private int roomNumber;
+    private String roomType;
+    private String roomFloor;
 
     public Room() {
-        this.room_number = 0;
-        this.room_type = "Hall";
-        this.room_floor = "Wood";
+        this.roomNumber = 0;
+        this.roomType = "Hall";
+        this.roomFloor = "Wood";
     }
 
-    public Room(int room_number, String room_type, String room_floor) {
-        this.room_number = room_number;
-        this.room_type = room_type;
-        this.room_floor = room_floor;
+    public Room(int roomNumber, String roomType, String roomFloor) {
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+        this.roomFloor = roomFloor;
     }
 
-    public int getRoom_number() {
-        return room_number;
+    public int getRoomNumber() {
+        return roomNumber;
     }
 
-    public void setRoom_number(int room_number) {
-        this.room_number = room_number;
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
-    public String getRoom_type() {
-        return room_type;
+    public String getRoomType() {
+        return roomType;
     }
 
-    public void setRoom_type(String room_type) {
-        this.room_type = room_type;
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
     }
 
-    public String getRoom_floor() {
-        return room_floor;
+    public String getRoomFloor() {
+        return roomFloor;
     }
 
-    public void setRoom_floor(String room_floor) {
-        this.room_floor = room_floor;
+    public void setRoomFloor(String roomFloor) {
+        this.roomFloor = roomFloor;
     }
 
     @Override
     public String toString() {
         return "Room{" +
-                "room_number=" + room_number +
-                ", room_type='" + room_type + '\'' +
-                ", room_floor='" + room_floor + '\'' +
+                "roomNumber=" + roomNumber +
+                ", roomType='" + roomType + '\'' +
+                ", roomFloor='" + roomFloor + '\'' +
                 '}';
     }
-
-
 }
