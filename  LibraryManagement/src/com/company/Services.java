@@ -1,5 +1,12 @@
 package com.company;
 
+import com.company.Exceptions.FileWritingException;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class Services{
@@ -49,7 +56,7 @@ public class Services{
 
     //adauga librarie
 
-    public void addLibrary(){
+    public void addLibrary() throws FileWritingException {
         System.out.println("Name of the library: ");
         String lName = scanner.nextLine();
         System.out.println("Adress of the library: ");
@@ -57,18 +64,20 @@ public class Services{
         Library library = new Library(lName, address, new ArrayList<Section>());
         libraries.add(library);
         System.out.println("Library added");
+        Services.audit("newlibrary");
 
 
     }
 
     //afiseaza librarii
 
-    public void showLibraries(){
+    public void showLibraries() throws FileWritingException {
         int i = 1;
         for(Library library : libraries){
             System.out.println(i + ". " + library);
             i ++;
         }
+        Services.audit("showlibraries");
     }
 
     //SECTIE
@@ -77,7 +86,7 @@ public class Services{
 
     //adauga sectie intr-o librarie
 
-    public void addSection(){
+    public void addSection() throws FileWritingException {
         showLibraries();
         System.out.println("\nIndex of the library: ");
         int lIndex = scanner.nextInt();
@@ -93,13 +102,14 @@ public class Services{
         sections.add(new Section(sName, floor, library, books));
         library.setSections(sections);
         System.out.println("Successful insertion!\n");
+        Services.audit("newSection");
     }
 
 
 
     //sterge sectie
 
-    public void removeSection(){
+    public void removeSection() throws FileWritingException {
         Library library = showSections();
         System.out.println("Index of the section you want to remove: ");
         int sIndex = scanner.nextInt();
@@ -108,11 +118,12 @@ public class Services{
         sections.remove(sections.get(sIndex - 1));
         library.setSections(sections);
         System.out.println("Section removed!");
+        Services.audit("removeSection");
     }
 
     //afiseaza sectii pentru o librarie
 
-    public Library showSections(){
+    public Library showSections() throws FileWritingException {
         showLibraries();
         System.out.println("\nIndex of the library: ");
         int lIndex = scanner.nextInt();
@@ -124,6 +135,7 @@ public class Services{
             System.out.println(j + ". " + section);
             j++;
         }
+        Services.audit("showSections");
         return library;
 
     }
@@ -132,7 +144,7 @@ public class Services{
 
     //adauga carte
 
-    public void addBook(){
+    public void addBook() throws FileWritingException {
         Library library = showSections();
         System.out.println("Index of the section you want to add a book in: ");
         int sIndex = scanner.nextInt();
@@ -152,11 +164,12 @@ public class Services{
         books.add(book);
         section.setBooks(books);
         System.out.println("Book added!");
+        Services.audit("newBook");
     }
 
     //sterge carte
 
-    public void removeBook(){
+    public void removeBook() throws FileWritingException {
         Library library = showSections();
         System.out.println("Index of the section you want to remove the book from: ");
         int sIndex = scanner.nextInt();
@@ -174,11 +187,12 @@ public class Services{
         books.remove(books.get(bIndex- 1));
         section.setBooks(books);
         System.out.println("Book removed!");
+        Services.audit("removeBook");
     }
 
     //afiseaza carti pentru o sectie dintr-o librarie
 
-    public void showBooks(){
+    public void showBooks() throws FileWritingException {
         Library library = showSections();
         System.out.println("Choose the index of a section: ");
         int sIndex = scanner.nextInt();
@@ -186,6 +200,7 @@ public class Services{
         for (Book book : library.getSections().get(sIndex - 1).getBooks()){
             System.out.println(book);
         }
+        Services.audit("showBooks");
 
 
     }
@@ -195,7 +210,7 @@ public class Services{
 
     //adauga angajat
 
-    public void Hire(){
+    public void Hire() throws FileWritingException {
         System.out.println("Name:");
         String eName = scanner.nextLine();
         System.out.println("Hours per day:");
@@ -229,6 +244,7 @@ public class Services{
             emp = new Librarian(eName, hours, birthday, libraries.get(lIndex - 1), sections.get(sIndex - 1));
             employees.add(emp);
             System.out.println("Successful employment!");
+            Services.audit("HireEmployee");
 
         }
 
@@ -236,6 +252,7 @@ public class Services{
             emp = new Warder(eName, hours, birthday, libraries.get(lIndex - 1));
             employees.add(emp);
             System.out.println("Successful employment!");
+            Services.audit("HireEmployee");
         }
 
         else{
@@ -246,13 +263,14 @@ public class Services{
 
     //sterge angajat
 
-    public void Fire(){
+    public void Fire() throws FileWritingException {
         System.out.println("Employee name: ");
         String eName = scanner.nextLine();
         for (Employee emp : employees){
             if (emp.getName().equals(eName)){
                 employees.remove(emp);
                 System.out.println("Successful dismissal!");
+                Services.audit("FireEmployee");
                 break;
             }
         else{
@@ -265,19 +283,20 @@ public class Services{
 
     //afiseaza angajati
 
-    public void showEmployees(){
+    public void showEmployees() throws FileWritingException {
         int i = 1;
         for (Employee employee: employees){
             System.out.println(i + ". " + employee);
             i ++;
         }
+        Services.audit("showEmployees");
     }
 
     //IMPRUMUT
 
     //adauga imprumut
 
-    public void newLending() {
+    public void newLending() throws FileWritingException {
         System.out.println("The name of the reader: ");
         String rName = scanner.nextLine();
         Subscription subscription = new Subscription();
@@ -324,21 +343,23 @@ public class Services{
         books.add(book);
         subscription.setBooks(books);
         System.out.println("Successful lending!");
+        Services.audit("newLending");
     }
 
     //afiseaza imprumuturi
 
-    public void showLendings(){
+    public void showLendings() throws FileWritingException {
         for(Lending lending: lendings){
             System.out.println(lending);
         }
+        Services.audit("showLendings");
     }
 
     //ABONAMENT
 
     //creeaza abonament
 
-    public void newSubscription(){
+    public void newSubscription() throws Exception {
 
         System.out.println("Choose the library: ");
         showLibraries();
@@ -351,22 +372,41 @@ public class Services{
         String address = scanner.nextLine();
         Reader reader = new Reader(rName, address);
         System.out.println("Year: ");
-        int year = scanner.nextInt();
+        try {
+            int year = scanner.nextInt();
+            List<Book> books = new ArrayList<Book>();
+            Subscription subscription = new Subscription(library, reader, year, books);
+            subscriptions.add(subscription);
+
+            System.out.println("Subscription created! ");
+            Services.audit("newSubscription");
+        }
+        catch (InputMismatchException e){
+            System.out.println("The input must be a number");
+        }
         scanner.nextLine();
 
 //        private int numberBooks = 0; //creste la fiecare imprumut
-        List<Book> books = new ArrayList<Book>();
-        Subscription subscription = new Subscription(library, reader, year, books);
-        subscriptions.add(subscription);
 
-        System.out.println("Subscription created! ");
     }
 
     //afiseaza abonamente
 
-    public void showSubscription(){
+    public void showSubscription() throws FileWritingException {
         for (Subscription subscription : subscriptions){
             System.out.println(subscription);
         }
+        Services.audit("showSubscription");
     }
+
+    public static void audit(String action) throws FileWritingException {
+        try (BufferedWriter buffer = new BufferedWriter(new FileWriter("src/com/company/Files/auditIn.txt", true))) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            String text = action + ", " + timestamp + '\n';
+            buffer.write(text);
+        } catch (IOException e) {
+            throw new FileWritingException("Something went wrong in writeUsingBufferedWriter method", e);
+        }
+    }
+
 }

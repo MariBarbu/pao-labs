@@ -1,14 +1,29 @@
 package com.company;
 
 
+import com.company.FileService.ReadFromFileService;
+import com.company.FileService.WriteToFileService;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
     static Services services = new Services();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        List<Library> libraries = ReadFromFileService.readLibrary();
+        List<Section> sections = ReadFromFileService.readSection(libraries);
+        List<Book> books = ReadFromFileService.readBook(sections);
+        List<Librarian> librarians = ReadFromFileService.readLibrarian(libraries);
+        Services.setLibraries(libraries);
+        TreeSet<Employee> employees = Services.getEmployees();
+        employees.addAll(librarians);
+        Services.setEmployees(employees);
+
         boolean exit = false;
         while (!exit) {
             System.out.println("\n1. Employees\n2. Library\n3. Sections\n4. Books\n5. Subscription\n6. Lending\n0. Exit");
@@ -127,5 +142,28 @@ public class Main {
                     break;
             }
         }
+
+        WriteToFileService.writeLibrary(Services.getLibraries());
+        List<Section> sectionsToWrite = new ArrayList<>();
+        for(Library library : Services.getLibraries() ){
+            sectionsToWrite.addAll(library.getSections());
+        }
+        WriteToFileService.writeSection(sectionsToWrite);
+        List<Book> booksToWrite = new ArrayList<>();
+        for (Section section : sectionsToWrite){
+            for (Book book : section.getBooks()){
+                if (!booksToWrite.contains(book)){
+                    booksToWrite.add(book);
+                }
+            }
+        }
+        WriteToFileService.writeBook(booksToWrite);
+        List<Librarian> librariansToWrite = new ArrayList<>();
+        for(Employee employee : Services.getEmployees()){
+            if (employee instanceof Librarian){
+                librariansToWrite.add((Librarian)employee);
+            }
+        }
+        WriteToFileService.writeLibrarian(librariansToWrite);
     }
 }
