@@ -1,29 +1,29 @@
 package com.company;
 
 public class Librarian extends Employee{
-    private Section section;
+    private int section_id;
 
     public Librarian() {
         super();
-        this.section = new Section();
+        this.section_id = 0;
     }
 
-    public Librarian(String name, int hours, String birthDate, Library library, Section section) {
-        super(name, hours, birthDate, library);
-        this.section = section;
+    public Librarian(int id, String name, int hours, String birthDate, int library_id, int section_id) {
+        super(id, name, hours, birthDate, library_id);
+        this.section_id = section_id;
     }
 
-    public Section getSection() {
-        return section;
+    public int getSection_id() {
+        return section_id;
     }
 
-    public void setSection(Section section) {
-        this.section = section;
+    public void setSection_id(int section_id) {
+        this.section_id = section_id;
     }
 
     @Override
     public String toString() {
         return super.toString() +
-                ", section: " + section;
+                ", section: " + section_id;
     }
 }

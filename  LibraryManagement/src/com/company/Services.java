@@ -1,19 +1,27 @@
 package com.company;
 
 import com.company.Exceptions.FileWritingException;
+import com.company.repository.BookRepository;
+import com.company.repository.LibrarianRepository;
+import com.company.repository.LibraryRepository;
+import com.company.repository.SectionRepository;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 
 public class Services{
 
+    static LibraryRepository libraryRepository = new LibraryRepository();
+    static SectionRepository sectionRepository = new SectionRepository();
+    static BookRepository bookRepository = new BookRepository();
+    static LibrarianRepository librarianRepository = new LibrarianRepository();
+
     Scanner scanner = new Scanner(System.in);
     static private TreeSet<Employee> employees = new TreeSet<Employee>(Comparator.comparing(Employee::getHours));
-    static private List<Library> libraries = new ArrayList<Library>();
+    static private List<Library> libraries = libraryRepository.getAll();
     static private List<Lending>lendings = new ArrayList<Lending>();
     static private List<Subscription> subscriptions = new ArrayList<Subscription>();
 
@@ -54,6 +62,15 @@ public class Services{
 
 
 
+
+
+    public void createTables(){
+        librarianRepository.createTable();
+        libraryRepository.createTable();
+        sectionRepository.createTable();
+        bookRepository.createTable();
+    }
+
     //adauga librarie
 
     public void addLibrary() throws FileWritingException {
@@ -61,8 +78,9 @@ public class Services{
         String lName = scanner.nextLine();
         System.out.println("Adress of the library: ");
         String address = scanner.nextLine();
-        Library library = new Library(lName, address, new ArrayList<Section>());
-        libraries.add(library);
+
+        libraryRepository.insertLibrary(lName, address);
+        libraries = libraryRepository.getAll();
         System.out.println("Library added");
         Services.audit("newlibrary");
 
@@ -80,9 +98,43 @@ public class Services{
         Services.audit("showlibraries");
     }
 
+    // modifica librarie
+
+    public void updateLibrary() throws FileWritingException{
+        System.out.println("Choose library: \n");
+        int i = 1;
+        for (Library library:libraries) {
+            System.out.println(i + ". " + library);
+            i ++;
+        }
+        int lIndex = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("New name: \n");
+        String newName = scanner.nextLine();
+        System.out.println(libraries.get(lIndex-1).getId());
+        libraryRepository.updateLibraryName(newName, libraries.get(lIndex-1).getId());
+        libraries = libraryRepository.getAll();
+        Services.audit("updatelibraries");
+    }
+
+    // sterge librarie
+
+    public void deleteLibrary() throws FileWritingException{
+        System.out.println("Choose library: \n");
+        int i = 1;
+        for (Library library:libraries) {
+            System.out.println(i + ". " + library);
+            i ++;
+        }
+        int lIndex = scanner.nextInt();
+        scanner.nextLine();
+        libraryRepository.deleteLibrary(libraries.get(lIndex-1).getId());
+        System.out.println("Library deleted! \n");
+        libraries = libraryRepository.getAll();
+        Services.audit("deletelibraries");
+    }
+
     //SECTIE
-
-
 
     //adauga sectie intr-o librarie
 
@@ -92,15 +144,13 @@ public class Services{
         int lIndex = scanner.nextInt();
         scanner.nextLine();
         Library library = libraries.get(lIndex - 1);
-        List<Section> sections = library.getSections();
         System.out.println("Name of the section: ");
         String sName = scanner.nextLine();
         System.out.println("Floor of the section: ");
         int floor = scanner.nextInt();
         scanner.nextLine();
         List<Book> books = new ArrayList<Book>();
-        sections.add(new Section(sName, floor, library, books));
-        library.setSections(sections);
+        sectionRepository.insertSection(sName, floor, library.getId());
         System.out.println("Successful insertion!\n");
         Services.audit("newSection");
     }
@@ -114,9 +164,8 @@ public class Services{
         System.out.println("Index of the section you want to remove: ");
         int sIndex = scanner.nextInt();
         scanner.nextLine();
-        List<Section> sections = library.getSections();
-        sections.remove(sections.get(sIndex - 1));
-        library.setSections(sections);
+        List<Section> sections = sectionRepository.getAll(library.getId());
+        sectionRepository.deleteSection(sections.get(sIndex-1).getId());
         System.out.println("Section removed!");
         Services.audit("removeSection");
     }
@@ -129,9 +178,10 @@ public class Services{
         int lIndex = scanner.nextInt();
         scanner.nextLine();
         Library library = libraries.get(lIndex - 1);
+        System.out.println(library.getId());
         int j = 1;
         System.out.println("Sections: ");
-        for (Section section : library.getSections()) {
+        for (Section section : sectionRepository.getAll(library.getId())) {
             System.out.println(j + ". " + section);
             j++;
         }
@@ -140,17 +190,37 @@ public class Services{
 
     }
 
+    // modifica sectie
+
+    public void updateSection() throws FileWritingException {
+        Library library = showSections();
+        System.out.println("\nIndex of the section: ");
+        int lIndex = scanner.nextInt();
+        scanner.nextLine();
+        Section section = sectionRepository.getAll(library.getId()).get(lIndex - 1);
+        System.out.println("New name: ");
+        String sName = scanner.nextLine();
+        sectionRepository.updateSectionName(sName, section.getId());
+        System.out.println(library.getId());
+        System.out.println(section.getId());
+        System.out.println("Successful changes!\n");
+        Services.audit("newSection");
+    }
+
+
+
     //CARTE
 
     //adauga carte
 
     public void addBook() throws FileWritingException {
+        System.out.println("Choose the index of the library: \n");
         Library library = showSections();
         System.out.println("Index of the section you want to add a book in: ");
         int sIndex = scanner.nextInt();
         scanner.nextLine();
-        Section section = library.getSections().get(sIndex - 1);
-        List<Book> books = section.getBooks();
+        Section section = sectionRepository.getAll(library.getId()).get(sIndex-1);
+
         System.out.println("Title: ");
         String title = scanner.nextLine();
         System.out.println("Author: ");
@@ -160,9 +230,8 @@ public class Services{
         System.out.println("Year: ");
         int year = scanner.nextInt();
         scanner.nextLine();
-        Book book = new Book(title, author, description, year, section);
-        books.add(book);
-        section.setBooks(books);
+
+        bookRepository.insertBook(title, author, description, year, section.getId());
         System.out.println("Book added!");
         Services.audit("newBook");
     }
@@ -174,8 +243,8 @@ public class Services{
         System.out.println("Index of the section you want to remove the book from: ");
         int sIndex = scanner.nextInt();
         scanner.nextLine();
-        Section section = library.getSections().get(sIndex - 1);
-        List<Book> books = section.getBooks();
+        Section section = sectionRepository.getAll(library.getId()).get(sIndex-1);
+        List<Book> books = bookRepository.getAll(section.getId());
         int i = 1;
         for (Book book : books){
             System.out.println(i + ". " + book);
@@ -184,25 +253,43 @@ public class Services{
         System.out.println("Index of the book you want to remove: ");
         int bIndex = scanner.nextInt();
         scanner.nextLine();
-        books.remove(books.get(bIndex- 1));
-        section.setBooks(books);
+        bookRepository.deleteBook(books.get(bIndex - 1).getId());
         System.out.println("Book removed!");
         Services.audit("removeBook");
     }
 
     //afiseaza carti pentru o sectie dintr-o librarie
 
-    public void showBooks() throws FileWritingException {
+    public Section showBooks() throws FileWritingException {
         Library library = showSections();
         System.out.println("Choose the index of a section: ");
         int sIndex = scanner.nextInt();
         scanner.nextLine();
-        for (Book book : library.getSections().get(sIndex - 1).getBooks()){
-            System.out.println(book);
+        System.out.println("Books: \n");
+        ArrayList<Book> books = bookRepository.getAll(sectionRepository.getAll(library.getId()).get(sIndex-1).getId());
+        int i = 1;
+        for (Book book :books){
+            System.out.println(i + ". " + book);
         }
         Services.audit("showBooks");
+        return sectionRepository.getAll(library.getId()).get(sIndex-1);
 
+    }
 
+    //editeaza carte
+
+    public void updateBook() throws FileWritingException {
+        Section section = showBooks();
+        System.out.println("Index of the book you want to update: ");
+        int bIndex = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("New title: ");
+        String title = scanner.nextLine();
+
+        bookRepository.updateBookTitle(title, bookRepository.getAll(section.getId()).get(bIndex-1).getId());
+        System.out.println("Book updated!");
+        Services.audit("newBook");
     }
 
 
@@ -232,7 +319,7 @@ public class Services{
         Employee emp;
         if (spc == 1){
             System.out.println("Choose the section: ");
-            List <Section> sections = libraries.get(lIndex - 1).getSections();
+            List <Section> sections = sectionRepository.getAll(libraries.get(lIndex-1).getId());
             int j = 1;
             for( Section section : sections){
                 System.out.println(j + ". " + section);
@@ -241,15 +328,14 @@ public class Services{
 
             int sIndex = scanner.nextInt();
             scanner.nextLine();
-            emp = new Librarian(eName, hours, birthday, libraries.get(lIndex - 1), sections.get(sIndex - 1));
-            employees.add(emp);
+            librarianRepository.insertLibrarian(eName, hours, birthday, libraries.get(lIndex - 1).getId(), sections.get(sIndex - 1).getId());
             System.out.println("Successful employment!");
             Services.audit("HireEmployee");
 
         }
 
         else if (spc == 2 ){
-            emp = new Warder(eName, hours, birthday, libraries.get(lIndex - 1));
+            emp = new Warder(0, eName, hours, birthday, libraries.get(lIndex - 1).getId());
             employees.add(emp);
             System.out.println("Successful employment!");
             Services.audit("HireEmployee");
@@ -264,32 +350,46 @@ public class Services{
     //sterge angajat
 
     public void Fire() throws FileWritingException {
-        System.out.println("Employee name: ");
-        String eName = scanner.nextLine();
-        for (Employee emp : employees){
-            if (emp.getName().equals(eName)){
-                employees.remove(emp);
-                System.out.println("Successful dismissal!");
-                Services.audit("FireEmployee");
-                break;
-            }
-        else{
-                System.out.println("This employee doesn't exist!");
-            }
-
+        System.out.println("Choose an employee: ");
+        ArrayList<Librarian> librarians = librarianRepository.getAll();
+        int i = 1;
+        for(Librarian l : librarians){
+            System.out.println(i + ". " + l);
+            i ++;
         }
+        int eIndex = scanner.nextInt();
+        scanner.nextLine();
+        librarianRepository.deleteLibrarian(librarians.get(eIndex-1).getId());
+        System.out.println("Successful dismissal!");
+        Services.audit("FireEmployee");
+
     }
 
 
-    //afiseaza angajati
+
+    //afiseaza bibliotecari
 
     public void showEmployees() throws FileWritingException {
         int i = 1;
-        for (Employee employee: employees){
+        for (Employee employee: librarianRepository.getAll()){
             System.out.println(i + ". " + employee);
             i ++;
         }
         Services.audit("showEmployees");
+    }
+
+    // editeaza bibliotecar
+
+    public void updateEmployee() throws FileWritingException{
+        System.out.println("Choose the employee to edit:\n");
+        showEmployees();
+        int eIndex = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("New name:\n");
+        String name = scanner.nextLine();
+        librarianRepository.updateLibrarianName(name, librarianRepository.getAll().get(eIndex-1).getId());
+        System.out.println("Employee updated!");
+        Services.audit("updateEmployee");
     }
 
     //IMPRUMUT
@@ -319,8 +419,8 @@ public class Services{
         System.out.println("The title of the book: ");
         String title = scanner.nextLine();
         Book book = new Book();
-        for (Section section : subscription.getLibrary().getSections()) {
-            for (Book book1 : section.getBooks()) {
+        for (Section section : sectionRepository.getAll(subscription.getLibrary().getId())) {
+            for (Book book1 : bookRepository.getAll(section.getId())) {
                 if (book1.getTitle().equals(title)) {
                     {
                         book = book1;

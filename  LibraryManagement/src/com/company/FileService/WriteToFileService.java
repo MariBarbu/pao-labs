@@ -26,7 +26,7 @@ public class WriteToFileService{
     public static void writeSection(List<Section> sections) throws FileWritingException {
         try (BufferedWriter buffer = new BufferedWriter(new FileWriter("src/com/company/Files/sectionIn.txt"))) {
             for(Section section : sections) {
-                String text = section.getName() + "," + section.getFloor() + ',' + section.getLibrary().getName() + '\n';
+                String text = section.getName() + "," + section.getFloor() + ',' + section.getLibrary_id() + '\n';
                 buffer.write(text);
             }
         } catch (IOException e) {
@@ -39,7 +39,7 @@ public class WriteToFileService{
         try (BufferedWriter buffer = new BufferedWriter(new FileWriter("src/com/company/Files/bookIn.txt"))) {
             for(Book book : books) {
                 String text = book.getTitle() + "," + book.getAuthor() + ',' + book.getDescription() + ',' + book.getYear() + ',' +
-                        book.getSection().getName() + '\n';
+                        book.getSection_id()+ '\n';
                 buffer.write(text);
             }
         } catch (IOException e) {
@@ -52,7 +52,7 @@ public class WriteToFileService{
         try (BufferedWriter buffer = new BufferedWriter(new FileWriter("src/com/company/Files/librarianIn.txt"))) {
             for(Librarian librarian : librarians) {
                 String text = librarian.getName() + ',' + librarian.getHours() + ',' + librarian.getBirthDate() + ','
-                        + librarian.getLibrary().getName() + ',' + librarian.getSection().getName() + '\n';
+                        + librarian.getLibrary_id() + ',' + librarian.getSection_id() + '\n';
                 buffer.write(text);
             }
         } catch (IOException e) {

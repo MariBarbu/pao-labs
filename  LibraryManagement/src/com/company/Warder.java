@@ -7,8 +7,8 @@ public class Warder extends Employee{
       super();
    }
 
-   public Warder(String name, int hours, String birthDate, Library library) {
-      super(name, hours, birthDate, library);
+   public Warder(int id, String name, int hours, String birthDate, int library_id) {
+      super(id, name, hours, birthDate, library_id);
    }
 
    public static int getHazardPay() {

@@ -3,23 +3,27 @@ package com.company;
 import java.util.Date;
 
 abstract public class Employee {
+    private int id;
     private String name;
     private int hours;
     private String birthDate;
-    private Library library;
+    private int library_id;
+
 
     public Employee() {
+        this.id = 0;
         this.name = "";
         this.hours = 0;
         this.birthDate = "";
-        this.library = new Library();
+        this.library_id = 0;
     }
 
-    public Employee(String name, int hours, String birthDate, Library library) {
+    public Employee(int id, String name, int hours, String birthDate, int library_id) {
+        this.id = id;
         this.name = name;
         this.hours = hours;
         this.birthDate = birthDate;
-        this.library = library;
+        this.library_id = library_id;
     }
 
     public String getName() {
@@ -47,17 +51,25 @@ abstract public class Employee {
         this.birthDate = birthDate;
     }
 
-    public Library getLibrary() {
-        return library;
+    public int getId() {
+        return id;
     }
 
-    public void setLibrary(Library library) {
-        this.library = library;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getLibrary_id() {
+        return library_id;
+    }
+
+    public void setLibrary_id(int library_id) {
+        this.library_id = library_id;
     }
 
     @Override
     public String toString() {
-        return name + " born in  " + birthDate  + ", works " + hours + " per day in " + library;
+        return name + " born in  " + birthDate  + ", works " + hours + " per day in " + library_id;
 
     }
 }

@@ -1,8 +1,12 @@
 package com.company;
 
 
-import com.company.FileService.ReadFromFileService;
-import com.company.FileService.WriteToFileService;
+//import com.company.FileService.ReadFromFileService;
+//import com.company.FileService.WriteToFileService;
+import com.company.repository.BookRepository;
+import com.company.repository.LibrarianRepository;
+import com.company.repository.LibraryRepository;
+import com.company.repository.SectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +19,17 @@ public class Main {
     static Services services = new Services();
 
     public static void main(String[] args) throws Exception {
-        List<Library> libraries = ReadFromFileService.readLibrary();
-        List<Section> sections = ReadFromFileService.readSection(libraries);
-        List<Book> books = ReadFromFileService.readBook(sections);
-        List<Librarian> librarians = ReadFromFileService.readLibrarian(libraries);
-        Services.setLibraries(libraries);
-        TreeSet<Employee> employees = Services.getEmployees();
-        employees.addAll(librarians);
-        Services.setEmployees(employees);
+
+        services.createTables();
+
+//        List<Library> libraries = ReadFromFileService.readLibrary();
+//        List<Section> sections = ReadFromFileService.readSection(libraries);
+//        List<Book> books = ReadFromFileService.readBook(sections);
+//        List<Librarian> librarians = ReadFromFileService.readLibrarian(libraries);
+//        Services.setLibraries(libraries);
+//        TreeSet<Employee> employees = Services.getEmployees();
+//        employees.addAll(librarians);
+//        Services.setEmployees(employees);
 
         boolean exit = false;
         while (!exit) {
@@ -35,17 +42,20 @@ public class Main {
                     System.out.println("See you next time!");
                     break;
                 case 1:
-                    System.out.println("1. Hire someone new\n2. Fire someone:(\n3. Show employees");
+                    System.out.println("1. Hire someone new\n2. Show employees\n3. Update employee\n4. Fire someone:( ");
                     int nr1 = scanner.nextInt();
                     switch (nr1) {
                         case 1:
                             services.Hire();
                             break;
                         case 2:
-                            services.Fire();
+                            services.showEmployees();
                             break;
                         case 3:
-                            services.showEmployees();
+                            services.updateEmployee();
+                            break;
+                        case 4:
+                            services.Fire();
                             break;
                         default:
                             System.out.println("Not a valid option");
@@ -53,7 +63,7 @@ public class Main {
                     }
                     break;
                 case 2:
-                    System.out.println("1. New library\n2. Show libraries");
+                    System.out.println("1. New library\n2. Show libraries\n3. Update library\n4. Delete library");
                     int nr2 = scanner.nextInt();
                     switch (nr2) {
                         case 1:
@@ -62,23 +72,32 @@ public class Main {
                         case 2:
                             services.showLibraries();
                             break;
+                        case 3:
+                            services.updateLibrary();
+                            break;
+                        case 4:
+                            services.deleteLibrary();
+                            break;
                         default:
                             System.out.println("Not a valid option");
                             break;
                     }
                     break;
                 case 3:
-                    System.out.println("1. New section\n2. Remove section\n3. Show sections");
+                    System.out.println("1. New section\n2. Show sections \n3. Update section\n4. Remove section");
                     int nr3 = scanner.nextInt();
                     switch (nr3) {
                         case 1:
                             services.addSection();
                             break;
                         case 2:
-                            services.removeSection();
+                            services.showSections();
                             break;
                         case 3:
-                            services.showSections();
+                            services.updateSection();
+                            break;
+                        case 4:
+                            services.removeSection();
                             break;
                         default:
                             System.out.println("Not a valid option");
@@ -88,17 +107,20 @@ public class Main {
                     break;
                 case 4:
 
-                    System.out.println("1. New book\n2. Remove book\n3. Show books");
+                    System.out.println("1. New book\n2. Show books\n3. Update book\n4. Remove book ");
                     int nr4 = scanner.nextInt();
                     switch (nr4) {
                         case 1:
                             services.addBook();
                             break;
                         case 2:
-                            services.removeBook();
+                            services.showBooks();
                             break;
                         case 3:
-                            services.showBooks();
+                            services.updateBook();
+                            break;
+                        case 4:
+                            services.removeBook();
                             break;
                         default:
                             System.out.println("Not a valid option");
@@ -143,27 +165,27 @@ public class Main {
             }
         }
 
-        WriteToFileService.writeLibrary(Services.getLibraries());
-        List<Section> sectionsToWrite = new ArrayList<>();
-        for(Library library : Services.getLibraries() ){
-            sectionsToWrite.addAll(library.getSections());
-        }
-        WriteToFileService.writeSection(sectionsToWrite);
-        List<Book> booksToWrite = new ArrayList<>();
-        for (Section section : sectionsToWrite){
-            for (Book book : section.getBooks()){
-                if (!booksToWrite.contains(book)){
-                    booksToWrite.add(book);
-                }
-            }
-        }
-        WriteToFileService.writeBook(booksToWrite);
-        List<Librarian> librariansToWrite = new ArrayList<>();
-        for(Employee employee : Services.getEmployees()){
-            if (employee instanceof Librarian){
-                librariansToWrite.add((Librarian)employee);
-            }
-        }
-        WriteToFileService.writeLibrarian(librariansToWrite);
+//        WriteToFileService.writeLibrary(Services.getLibraries());
+//        List<Section> sectionsToWrite = new ArrayList<>();
+//        for(Library library : Services.getLibraries() ){
+//            sectionsToWrite.addAll(library.getSections());
+//        }
+//        WriteToFileService.writeSection(sectionsToWrite);
+//        List<Book> booksToWrite = new ArrayList<>();
+//        for (Section section : sectionsToWrite){
+//            for (Book book : section.getBooks()){
+//                if (!booksToWrite.contains(book)){
+//                    booksToWrite.add(book);
+//                }
+//            }
+//        }
+//        WriteToFileService.writeBook(booksToWrite);
+//        List<Librarian> librariansToWrite = new ArrayList<>();
+//        for(Employee employee : Services.getEmployees()){
+//            if (employee instanceof Librarian){
+//                librariansToWrite.add((Librarian)employee);
+//            }
+//        }
+//        WriteToFileService.writeLibrarian(librariansToWrite);
     }
 }

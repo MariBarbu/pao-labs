@@ -3,26 +3,30 @@ package com.company;
 import java.util.Date;
 
 public class Book {
+    private int id;
     private String title;
     private String author;
     private String description;
     private int year;
-    private Section section;
+    private int section_id;
+
 
     public Book() {
+        this.id = 0;
         this.title = "";
         this.author = "";
         this.description = "";
         this.year = 0;
-        this.section = new Section();
+        this.section_id = 0;
     }
 
-    public Book(String title, String author, String description, int year, Section section) {
+    public Book(int id, String title, String author, String description, int year, int section_id) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.description = description;
         this.year = year;
-        this.section = section;
+        this.section_id = section_id;
     }
 
     public String getTitle() {
@@ -57,17 +61,25 @@ public class Book {
         this.year = year;
     }
 
-    public Section getSection() {
-        return section;
+    public int getId() {
+        return id;
     }
 
-    public void setSection(Section section) {
-        this.section = section;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getSection_id() {
+        return section_id;
+    }
+
+    public void setSection_id(int section_id) {
+        this.section_id = section_id;
     }
 
     @Override
     public String toString() {
-        return  "Title " + title + " by " + author + " from " + year + "\nSection: " + section + "\nDescription: "+ description;
+        return  "Title " + title + " by " + author + " from " + year + "\nSection: " + section_id + "\nDescription: "+ description;
 
     }
 }
