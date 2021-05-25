@@ -3,6 +3,7 @@ package com.company;
 
 //import com.company.FileService.ReadFromFileService;
 //import com.company.FileService.WriteToFileService;
+import com.company.config.DatabaseConfiguration;
 import com.company.repository.BookRepository;
 import com.company.repository.LibrarianRepository;
 import com.company.repository.LibraryRepository;
@@ -164,7 +165,7 @@ public class Main {
                     break;
             }
         }
-
+        DatabaseConfiguration.closeDatabaseConnection();
 //        WriteToFileService.writeLibrary(Services.getLibraries());
 //        List<Section> sectionsToWrite = new ArrayList<>();
 //        for(Library library : Services.getLibraries() ){
